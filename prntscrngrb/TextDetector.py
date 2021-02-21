@@ -1,7 +1,6 @@
 from keras_ocr import tools
 from keras_ocr.pipeline import Pipeline
 from runnable import Runnable
-from typing import List
 from prntscrngrb import log, db, ScreenShot
 from time import sleep
 
