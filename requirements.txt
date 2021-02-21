@@ -1,0 +1,13 @@
+bs4
+requests
+tqdm
+lxml
+random_user_agent
+keras
+git+https://github.com/GantMan/nsfw_model
+podb
+git+https://github.com/torpyorg/torpy
+pyrunnable
+loguru
+keras-ocr
+Pillow
