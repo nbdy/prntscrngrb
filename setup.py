@@ -29,7 +29,7 @@ setup(
     keywords="",
     packages=find_packages(),
     cmdclass={
-        'sdist': InstallSetupScript
+        'install': InstallSetupScript
     },
     entry_points={
         'console_scripts': [
