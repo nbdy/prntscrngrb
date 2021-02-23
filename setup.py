@@ -16,11 +16,7 @@ setup(
     ],
     keywords="",
     packages=find_packages(),
-    install_requires=[
-        "bs4", "requests", "tqdm", "lxml", "random_user_agent", "keras",
-        "git+https://github.com/GantMan/nsfw_model", "easyocr", "podb",
-        "git+https://github.com/torpyorg/torpy", "pyrunnable", "loguru"
-    ],
+    install_requires=open('requirements.txt').readlines(),
     entry_points={
         'console_scripts': [
             'prntscrngrb = prntscrngrb.__main__:main'
