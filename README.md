@@ -16,7 +16,10 @@ don't even use it myself
   - Checks for diffrent types of nudity
 ## install
 ```shell
-pip3 install git+https://github.com/nbdy/prntscrngrb
+git clone https://github.com/nbdy/prntscrngrb
+cd prntscrngrb
+./dependencies.sh
+pip3 install .
 ```
 ## use
 ```shell

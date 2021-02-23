@@ -1,14 +1,4 @@
-from setuptools.command.sdist import sdist
 from setuptools import setup, find_packages
-
-
-class InstallSetupScript(sdist):
-    def run(self):
-        try:
-            self.spawn(['./dependencies.sh'])
-        except Exception as e:
-            print(e)
-        super().run()
 
 
 setup(
@@ -26,9 +16,6 @@ setup(
     ],
     keywords="",
     packages=find_packages(),
-    cmdclass={
-        'sdist': InstallSetupScript
-    },
     entry_points={
         'console_scripts': [
             'prntscrngrb = prntscrngrb.__main__:main'
