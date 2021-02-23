@@ -5,9 +5,7 @@ from setuptools import setup, find_packages
 class InstallSetupScript(sdist):
     def run(self):
         try:
-            self.spawn(['pip3', 'install', 'bs4', 'requests', 'tqdm', 'lxml', 'random_user_agent',
-                        'keras', 'git+https://github.com/GantMan/nsfw_model', 'podb', 'keras-ocr',
-                        'git+https://github.com/torpyorg/torpy', 'pyrunnable', 'loguru', 'Pillow'])
+            self.spawn(['./dependencies.sh'])
         except Exception as e:
             print(e)
         super().run()
@@ -29,7 +27,7 @@ setup(
     keywords="",
     packages=find_packages(),
     cmdclass={
-        'install': InstallSetupScript
+        'sdist': InstallSetupScript
     },
     entry_points={
         'console_scripts': [
