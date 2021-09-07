@@ -1,31 +1,32 @@
-from runnable import Runnable
-from nsfw_detector import predict
-
-from prntscrngrb import log, db, ScreenShot
 from time import sleep
+from runnable import Runnable
+from nude import is_nude
+from pony.orm import db_session, select
+
+from prntscrngrb import log, Screenshot
 
 
 class NSFWDetector(Runnable):
-    def __init__(self, model_path: str):
-        Runnable.__init__(self)
-        self.model = predict.load_model(model_path)
-
     def on_start(self):
         log.info("Starting NSFW detector")
 
     def on_stop(self):
         log.info("Stopping NSFW detector")
 
-    def detect(self, item: ScreenShot):
+    @staticmethod
+    def detect(item: Screenshot):
         try:
-            r = predict.classify(self.model, item.file_path)
-            setattr(item, "nsfw_result", r)
-            item.nsfw_detected = True
-            db.update(item)
+            item.nsfw_detected = is_nude(item.file_path)
+            if item.nsfw_detected:
+                log.info("Detected nudity: '{}'", item.file_path)
         except Exception as e:
+            item.nsfw_detected = False
             log.warning(e)
+        item.nsfw_scanned = True
 
+    @db_session
     def work(self):
-        for item in db.find({"nsfw_detected": False}):
-            self.detect(item)
+        screenshots = select(s for s in Screenshot if not s.nsfw_scanned)
+        for s in screenshots:
+            self.detect(s)
         sleep(0.1)

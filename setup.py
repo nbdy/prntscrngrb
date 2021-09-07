@@ -21,8 +21,5 @@ setup(
             'prntscrngrb = prntscrngrb.__main__:main'
         ]
     },
-    package_data={
-        "prntscrngrb": ["nsfw_nn/*"]
-    },
     long_description_content_type="text/markdown",
 )

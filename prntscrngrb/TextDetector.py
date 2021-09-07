@@ -1,7 +1,8 @@
 from keras_ocr import tools
 from keras_ocr.pipeline import Pipeline
 from runnable import Runnable
-from prntscrngrb import log, db, ScreenShot
+from prntscrngrb import log, Screenshot
+from pony.orm import select, db_session
 from time import sleep
 
 
@@ -16,16 +17,25 @@ class TextDetector(Runnable):
     def on_stop(self):
         log.info("Stopping TextDetector")
 
-    def detect(self, item: ScreenShot):
+    @db_session
+    def detect(self, item: Screenshot):
         try:
-            r = self.pipeline.recognize([tools.read(item.file_path)])
-            setattr(item, "text_result", r)
+            text = ""
+            recognized_text = self.pipeline.recognize([tools.read(item.file_path)])
+            for text_items in recognized_text:
+                for text_item in text_items:
+                    text += text_item[0] + " "
+            log.info("Extracted text: '{}'", text)
+            item.text_result = text
             item.text_detected = True
-            db.update(item)
         except Exception as e:
+            item.text_detected = False
             log.warning(e)
 
+        item.text_scanned = True
+
+    @db_session
     def work(self):
-        for item in db.find({"text_detected": False}):
-            self.detect(item)
+        for s in select(s for s in Screenshot if not s.text_scanned):
+            self.detect(s)
         sleep(0.1)

@@ -1,16 +1,18 @@
+import datetime
+
 from requests import get
 from bs4 import BeautifulSoup
-from random import choices
+from random import choices, randint
 from string import ascii_lowercase, digits
 from os.path import isdir, join
 from os import makedirs
 from shutil import copyfileobj
 from runnable import Runnable
-
+from time import sleep
 from random_user_agent.user_agent import UserAgent
 from random_user_agent.params import SoftwareName, OperatingSystem
 
-from prntscrngrb import log, db, ScreenShot
+from prntscrngrb import log, db_has_screenshot_with_name, insert_screenshot
 
 
 class ImageFetcher(Runnable):
@@ -38,6 +40,7 @@ class ImageFetcher(Runnable):
         return ''.join(choices(self.suffix_charset, k=self.suffix_length))
 
     def is_screenshot(self, url):
+        log.debug("Checking: {}", url)
         rsp = get(url, headers={
             'User-Agent': self.user_agent_rotator.get_random_user_agent()
         })
@@ -57,15 +60,16 @@ class ImageFetcher(Runnable):
         with open(file_path, 'wb') as o:
             copyfileobj(rsp.raw, o)
         del rsp
-        screen_shot = ScreenShot(file_path, url, name)
-        db.insert(screen_shot)
+        insert_screenshot(name, file_path, url)
+        log.info("Saved image {}", file_path)
 
     def work(self):
         n = self.generate_suffix()
-        if db.contains({"suffix": n}):
+        if db_has_screenshot_with_name(n):
             return
         img_url = self.is_screenshot(self.base_url + n)
         if img_url:
             if not img_url.startswith("https") or not img_url.startswith("http"):
                 img_url = "https:" + img_url
             self.save_img(img_url, n, self.save_directory)
+        sleep(randint(1, 4))
