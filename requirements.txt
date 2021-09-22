@@ -9,5 +9,5 @@ pyrunnable
 loguru
 keras-ocr
 Pillow
-nudepy
+nudenet
 pony

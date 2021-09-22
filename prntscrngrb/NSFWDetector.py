@@ -1,24 +1,29 @@
 from time import sleep
 from runnable import Runnable
-from nude import is_nude
+from nudenet import NudeDetector
+from json import dumps
 from pony.orm import db_session, select
 
 from prntscrngrb import log, Screenshot
 
 
 class NSFWDetector(Runnable):
+    detector = NudeDetector()
+
     def on_start(self):
         log.info("Starting NSFW detector")
 
     def on_stop(self):
         log.info("Stopping NSFW detector")
 
-    @staticmethod
-    def detect(item: Screenshot):
+    @db_session
+    def detect(self, item: Screenshot):
         try:
-            item.nsfw_detected = is_nude(item.file_path)
+            r = self.detector.detect(item.file_path, mode='fast')
+            item.nsfw_detected = len(r) > 0
             if item.nsfw_detected:
-                log.info("Detected nudity: '{}'", item.file_path)
+                # log.info("Detected nudity: '{}'", item.file_path)
+                item.nsfw_result = dumps(r)
         except Exception as e:
             item.nsfw_detected = False
             log.warning(e)

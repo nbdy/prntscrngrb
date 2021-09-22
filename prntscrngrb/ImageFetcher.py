@@ -1,6 +1,4 @@
-import datetime
-
-from requests import get
+from requests import get, exceptions
 from bs4 import BeautifulSoup
 from random import choices, randint
 from string import ascii_lowercase, digits
@@ -41,27 +39,34 @@ class ImageFetcher(Runnable):
 
     def is_screenshot(self, url):
         log.debug("Checking: {}", url)
-        rsp = get(url, headers={
-            'User-Agent': self.user_agent_rotator.get_random_user_agent()
-        })
-        soup = BeautifulSoup(rsp.content, "lxml")
-        img = soup.find("img", {"id": "screenshot-image"})
-        if img and img.has_attr("src"):
-            return img["src"]
+        try:
+            rsp = get(url, headers={
+                'User-Agent': self.user_agent_rotator.get_random_user_agent()
+            })
+            soup = BeautifulSoup(rsp.content, "lxml")
+            img = soup.find("img", {"id": "screenshot-image"})
+            if img and img.has_attr("src"):
+                return img["src"]
+        except exceptions.ConnectionError as e:
+            log.warning(e)
+            pass
         return None
 
     def save_img(self, url, name, directory):
         if not isdir(directory):
             makedirs(directory)
-        rsp = get(url, stream=True, headers={
-            'User-Agent': self.user_agent_rotator.get_random_user_agent()
-        })
-        file_path = join(directory, name + '.png')
-        with open(file_path, 'wb') as o:
-            copyfileobj(rsp.raw, o)
-        del rsp
-        insert_screenshot(name, file_path, url)
-        log.info("Saved image {}", file_path)
+        try:
+            rsp = get(url, stream=True, headers={
+                'User-Agent': self.user_agent_rotator.get_random_user_agent()
+            })
+            file_path = join(directory, name + '.png')
+            with open(file_path, 'wb') as o:
+                copyfileobj(rsp.raw, o)
+            del rsp
+            insert_screenshot(name, file_path, url)
+            log.info("Saved image {}", file_path)
+        except exceptions.ConnectionError as e:
+            log.warning(e)
 
     def work(self):
         n = self.generate_suffix()

@@ -37,6 +37,7 @@ class Screenshot(db.Entity):
     name = orm.Required(str)
     nsfw_detected = orm.Optional(bool)
     nsfw_scanned = orm.Optional(bool)
+    nsfw_result = orm.Optional(str)
     text_detected = orm.Optional(bool)
     text_scanned = orm.Optional(bool)
     text_result = orm.Optional(str)

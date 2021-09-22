@@ -25,7 +25,7 @@ class TextDetector(Runnable):
             for text_items in recognized_text:
                 for text_item in text_items:
                     text += text_item[0] + " "
-            log.info("Extracted text: '{}'", text)
+            # log.info("Extracted text: '{}'", text)
             item.text_result = text
             item.text_detected = True
         except Exception as e:
