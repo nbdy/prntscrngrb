@@ -22,7 +22,7 @@ def process_screenshot(n, p, nsfw: NSFWDetector, text: TextDetector):
 
 
 def index_directory(nsfw: NSFWDetector, text: TextDetector, directory: str):
-    log.info("Indexing {}", directory)
+    log.info("Indexing directory '{}'", directory)
     for fp in tqdm(listdir(directory)):
         p = join(directory, fp)
         if isfile(p) and fp.endswith(".png"):
@@ -36,9 +36,9 @@ if __name__ == '__main__':
     ap.add_argument("-l", "--languages", nargs='+', default=['en', 'de'], help="TextDetector languages")
     ap.add_argument("-d", "--directory", default="crawled", help="Where to put them images")
     ap.add_argument("-sl", "--suffix_length", default=6, help="URL suffix length")
-    ap.add_argument("-id", "--index-directory", help="Index before actually running.", action="store_true")
     ap.add_argument("-co", "--crawl-only", help="Only download images", action="store_true")
     ap.add_argument("-db", "--database", help="Database name", default="prntscrn.db")
+    ap.add_argument("--skip-indexing", help="Skip the indexing step", action="store_true")
     a = ap.parse_args()
 
     db.bind(provider="sqlite", filename=a.database, create_db=True)
@@ -49,7 +49,7 @@ if __name__ == '__main__':
 
     img_fetcher = ImageFetcher(a.suffix_length, a.directory)
     if not a.crawl_only:
-        if a.index_directory:
+        if a.directory and not a.skip_indexing:
             index_directory(nsfw_detect, text_detect, a.directory)
 
     try:

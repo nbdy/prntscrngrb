@@ -11,3 +11,4 @@ keras-ocr
 Pillow
 nudenet
 pony
+flask

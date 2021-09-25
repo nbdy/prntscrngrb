@@ -11,9 +11,9 @@ don't even use it myself
 6. apply modules to entry
 ## modules
 - [X] TextAnalyzer
-  - Checks for text and saves that to the entry
+  - Checks for text and saves it
 - [X] NSFWAnalyzer
-  - Checks for diffrent types of nudity
+  - Detects nsfw and saves bounding boxes with label
 ## install
 ```shell
 git clone https://github.com/nbdy/prntscrngrb

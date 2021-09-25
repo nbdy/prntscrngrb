@@ -67,6 +67,8 @@ class ImageFetcher(Runnable):
             log.info("Saved image {}", file_path)
         except exceptions.ConnectionError as e:
             log.warning(e)
+        except exceptions.InvalidURL as e:
+            log.warning(e)
 
     def work(self):
         n = self.generate_suffix()
