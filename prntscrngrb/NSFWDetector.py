@@ -22,7 +22,7 @@ class NSFWDetector(Runnable):
             r = self.detector.detect(item.file_path, mode='fast')
             item.nsfw_detected = len(r) > 0
             if item.nsfw_detected:
-                log.info("Detected nudity: '{}'", item.file_path)
+                log.info("Detected human features: '{}'", item.file_path)
                 item.nsfw_result = dumps(r)
         except Exception as e:
             item.nsfw_detected = False
