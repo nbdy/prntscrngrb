@@ -33,8 +33,8 @@ def index_directory(nsfw: NSFWDetector, text: TextDetector, directory: str):
 if __name__ == '__main__':
     ap = ArgumentParser()
     ap.add_argument("-l", "--languages", nargs='+', default=['en', 'de'], help="TextDetector languages")
-    ap.add_argument("-d", "--directory", default=Path("crawled"), help="Where to put them images")
-    ap.add_argument("-sl", "--suffix_length", default=6, help="URL suffix length")
+    ap.add_argument("-d", "--directory", default=Path("crawled"), help="Image directory", type=Path)
+    ap.add_argument("-sl", "--suffix_length", default=6, help="URL suffix length", type=int)
     ap.add_argument("-co", "--crawl-only", help="Only download images", action="store_true")
     ap.add_argument("-db", "--database", help="Database name", default="prntscrn.db")
     ap.add_argument("--skip-indexing", help="Skip the indexing step", action="store_true")
