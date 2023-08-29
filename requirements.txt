@@ -4,11 +4,11 @@ tqdm
 lxml
 random_user_agent
 keras
-git+https://github.com/torpyorg/torpy
 pyrunnable
 loguru
 keras-ocr
 Pillow
-nudenet
+nudenetupdated
 pony
 flask
+tensorflow

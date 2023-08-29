@@ -1,15 +1,14 @@
 from argparse import ArgumentParser
 from os.path import join, isfile
 from os import listdir
+from pathlib import Path
+
 from tqdm import tqdm
 
 from prntscrngrb import log, db, db_has_screenshot_with_name, insert_screenshot, orm, Screenshot
 from prntscrngrb.ImageFetcher import ImageFetcher
 from prntscrngrb.TextDetector import TextDetector
 from prntscrngrb.NSFWDetector import NSFWDetector
-
-# todo if tor gets blocked by prnt.sc / cloudflare
-# todo use torpy for multithreading
 
 
 @orm.db_session
@@ -34,7 +33,7 @@ def index_directory(nsfw: NSFWDetector, text: TextDetector, directory: str):
 if __name__ == '__main__':
     ap = ArgumentParser()
     ap.add_argument("-l", "--languages", nargs='+', default=['en', 'de'], help="TextDetector languages")
-    ap.add_argument("-d", "--directory", default="crawled", help="Where to put them images")
+    ap.add_argument("-d", "--directory", default=Path("crawled"), help="Where to put them images")
     ap.add_argument("-sl", "--suffix_length", default=6, help="URL suffix length")
     ap.add_argument("-co", "--crawl-only", help="Only download images", action="store_true")
     ap.add_argument("-db", "--database", help="Database name", default="prntscrn.db")
@@ -49,7 +48,7 @@ if __name__ == '__main__':
 
     img_fetcher = ImageFetcher(a.suffix_length, a.directory)
     if not a.crawl_only:
-        if a.directory and not a.skip_indexing:
+        if a.directory.is_dir() and not a.skip_indexing:
             index_directory(nsfw_detect, text_detect, a.directory)
 
     try:

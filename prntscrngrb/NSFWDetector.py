@@ -1,6 +1,6 @@
 from time import sleep
 from runnable import Runnable
-from nudenet import NudeDetector
+from nudenetupdated import NudeDetector
 from json import dumps
 from pony.orm import db_session, select
 
